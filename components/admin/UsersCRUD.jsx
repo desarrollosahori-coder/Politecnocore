@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -6,9 +6,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Loader2 } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Plus, Edit, Trash2, Loader2, MoreVertical } from "lucide-react"
+
+// Función para obtener las iniciales de un nombre
+const getInitials = (name) => {
+  if (!name) return "U"
+  const names = name.split(" ")
+  if (names.length > 1) {
+    return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase()
+  }
+  return name.substring(0, 2).toUpperCase()
+}
 
 export default function UsersCRUD() {
   const [users, setUsers] = useState([])
@@ -28,12 +40,19 @@ export default function UsersCRUD() {
   }, [])
 
   const fetchUsers = async () => {
+    setIsLoading(true)
     try {
       const response = await fetch("/api/users")
       const result = await response.json()
 
       if (result.success) {
-        setUsers(result.data)
+        // Simulación de datos adicionales que podrían venir del backend
+        const usersWithDetails = result.data.map((user) => ({
+          ...user,
+          lastLogin: "2024-07-20T10:30:00Z", // Dato simulado
+          avatarUrl: user.avatarUrl || null, // Usar avatar si existe
+        }))
+        setUsers(usersWithDetails)
       } else {
         console.error("Error fetching users:", result.error)
       }
@@ -155,12 +174,15 @@ export default function UsersCRUD() {
 
         <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
           setIsDialogOpen(isOpen);
-          if (isOpen) {
+          if (!isOpen) {
             resetForm();
           }
         }}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={() => {
+              resetForm();
+              setIsDialogOpen(true);
+            }}>
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Usuario
             </Button>
@@ -205,8 +227,13 @@ export default function UsersCRUD() {
                 </Select>
               </div>
 
-              <div className="flex space-x-2 pt-4">
-                <Button type="submit" className="flex-1" disabled={isSubmitting}>
+              <DialogFooter className="pt-4">
+                <DialogClose asChild>
+                   <Button type="button" variant="secondary">
+                    Cancelar
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -218,10 +245,7 @@ export default function UsersCRUD() {
                     "Crear"
                   )}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="flex-1">
-                  Cancelar
-                </Button>
-              </div>
+              </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>
@@ -235,24 +259,46 @@ export default function UsersCRUD() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead className="w-[250px]">Usuario</TableHead>
                 <TableHead>Rol</TableHead>
-                <TableHead>Acciones</TableHead>
+                <TableHead>Último Acceso</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map((user) => (
                 <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
                   <TableCell>
-                    <div className="flex space-x-2">
-                      <Button variant="ghost" size="sm" onClick={() => handleEdit(user)}>
+                    <div className="flex items-center space-x-3">
+                      <Avatar>
+                        <AvatarImage src={user.avatarUrl} alt={user.name} />
+                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium text-foreground">{user.name}</p>
+                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={user.role === 'admin' ? 'destructive' : 'outline'}>
+                      {user.role}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                       <span>{new Date(user.lastLogin).toLocaleDateString()}</span>
+                       <span className="text-xs text-muted-foreground">
+                         {new Date(user.lastLogin).toLocaleTimeString()}
+                       </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(user)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleDelete(user.id)}>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(user.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
