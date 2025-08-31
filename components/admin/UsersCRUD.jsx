@@ -6,16 +6,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Loader2, Users } from "lucide-react"
-
-const USER_ROLES = [
-  { value: "admin", label: "Administrador" },
-  { value: "manager", label: "Gerente" },
-  { value: "editor", label: "Editor" },
-]
+import { Plus, Edit, Trash2, Loader2 } from "lucide-react"
 
 export default function UsersCRUD() {
   const [users, setUsers] = useState([])
@@ -26,8 +19,8 @@ export default function UsersCRUD() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "",
     role: "admin",
+    password: "",
   })
 
   useEffect(() => {
@@ -55,22 +48,22 @@ export default function UsersCRUD() {
     e.preventDefault()
     setIsSubmitting(true)
 
+    if (editingUser === null && !formData.password) {
+      alert("La contraseña es obligatoria para nuevos usuarios.")
+      setIsSubmitting(false)
+      return
+    }
+
     try {
       const url = editingUser ? `/api/users/${editingUser.id}` : "/api/users"
       const method = editingUser ? "PUT" : "POST"
-
-      // Para edición, no enviar password si está vacío
-      const submitData = { ...formData }
-      if (editingUser && !formData.password) {
-        delete submitData.password
-      }
 
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(submitData),
+        body: JSON.stringify(formData),
       })
 
       const result = await response.json()
@@ -96,8 +89,8 @@ export default function UsersCRUD() {
     setFormData({
       name: user.name,
       email: user.email,
-      password: "", // No mostrar password actual
       role: user.role,
+      password: "", // No se carga el hash de la contraseña
     })
     setIsDialogOpen(true)
   }
@@ -126,40 +119,21 @@ export default function UsersCRUD() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+    setFormData({ ...formData, [name]: value })
   }
 
-  const handleSelectChange = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+  const handleSelectChange = (value) => {
+    setFormData({ ...formData, role: value })
   }
 
   const resetForm = () => {
     setFormData({
       name: "",
       email: "",
-      password: "",
       role: "admin",
+      password: "",
     })
     setEditingUser(null)
-  }
-
-  const getRoleBadgeVariant = (role) => {
-    switch (role) {
-      case "admin":
-        return "default"
-      case "manager":
-        return "secondary"
-      case "editor":
-        return "outline"
-      default:
-        return "secondary"
-    }
   }
 
   if (isLoading) {
@@ -176,12 +150,17 @@ export default function UsersCRUD() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Gestión de Usuarios</h1>
-          <p className="text-muted-foreground">Administra los usuarios del sistema</p>
+          <p className="text-muted-foreground">Administra los usuarios de tu empresa</p>
         </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
+          setIsDialogOpen(isOpen);
+          if (isOpen) {
+            resetForm();
+          }
+        }}>
           <DialogTrigger asChild>
-            <Button onClick={resetForm}>
+            <Button>
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Usuario
             </Button>
@@ -202,30 +181,26 @@ export default function UsersCRUD() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">{editingUser ? "Nueva Contraseña (opcional)" : "Contraseña"}</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   value={formData.password}
                   onChange={handleChange}
+                  placeholder={editingUser ? "Dejar en blanco para no cambiar" : ""}
                   required={!editingUser}
-                  placeholder={editingUser ? "Dejar vacío para mantener actual" : ""}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label>Rol</Label>
-                <Select value={formData.role} onValueChange={(value) => handleSelectChange("role", value)}>
+                <Select value={formData.role} onValueChange={handleSelectChange}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona un rol" />
                   </SelectTrigger>
                   <SelectContent>
-                    {USER_ROLES.map((role) => (
-                      <SelectItem key={role.value} value={role.value}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="admin">Administrador</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -254,10 +229,7 @@ export default function UsersCRUD() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Lista de Usuarios ({users.length})
-          </CardTitle>
+          <CardTitle>Lista de Usuarios ({users.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -266,7 +238,6 @@ export default function UsersCRUD() {
                 <TableHead>Nombre</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Rol</TableHead>
-                <TableHead>Fecha de Registro</TableHead>
                 <TableHead>Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -275,12 +246,7 @@ export default function UsersCRUD() {
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={getRoleBadgeVariant(user.role)}>
-                      {USER_ROLES.find((r) => r.value === user.role)?.label || user.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{new Date(user.created_at).toLocaleDateString("es-ES")}</TableCell>
+                  <TableCell>{user.role}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="sm" onClick={() => handleEdit(user)}>

@@ -253,9 +253,14 @@ export default function ServicesCRUD() {
           <p className="text-muted-foreground">Administra los servicios de tu empresa</p>
         </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
+          setIsDialogOpen(isOpen);
+          if (isOpen) {
+            resetForm();
+          }
+        }}>
           <DialogTrigger asChild>
-            <Button onClick={resetForm}>
+            <Button>
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Servicio
             </Button>
