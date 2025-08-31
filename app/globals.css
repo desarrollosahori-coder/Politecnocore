@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Paleta de colores futurista y tecnológica para temática de IA */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 210 40% 98%;
+  --card-foreground: 222.2 47.4% 11.2%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 199 89% 48%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 188 95% 43%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 160 84% 39%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 210 40% 98%;
+  --ring: 199 89% 48%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Modo oscuro con colores futuristas más intensos */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 186 100% 69%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 199 89% 48%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 166 100% 42%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 222.2 84% 4.9%;
+  --ring: 186 100% 69%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Patrones futuristas sin gradientes, solo con puntos y líneas tecnológicas */
+.ai-pattern {
+  background-image: radial-gradient(circle at 1px 1px, rgba(14, 165, 233, 0.08) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.tech-grid {
+  background-image: linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.cyber-border {
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.1);
+}
+
+/* Estilos de componentes actualizados con colores futuristas */
+.btn-primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md font-medium transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.btn-secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 px-4 py-2 rounded-md font-medium transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.card {
+  @apply bg-card text-card-foreground rounded-lg border shadow-sm hover:shadow-md transition-shadow duration-200;
+}
+
+.input {
+  @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200;
+}
+
+/* Efectos de hover futuristas para elementos interactivos */
+.tech-hover {
+  @apply transition-all duration-200 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10;
+}
+
+.glow-effect {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+}
