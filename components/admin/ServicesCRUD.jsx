@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Plus, Edit, Trash2, Loader2, X } from "lucide-react"
 
@@ -397,9 +397,13 @@ export default function ServicesCRUD() {
                 />
                 <Label htmlFor="onPromotion">En promoción</Label>
               </div>
-
-              <div className="flex space-x-2 pt-4">
-                <Button type="submit" className="flex-1" disabled={isSubmitting}>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -411,10 +415,7 @@ export default function ServicesCRUD() {
                     "Crear"
                   )}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="flex-1">
-                  Cancelar
-                </Button>
-              </div>
+              </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>
