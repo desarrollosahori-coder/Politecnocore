@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Plus, Edit, Trash2, Loader2, X } from "lucide-react"
+import { Plus, Edit, Trash2, Loader2, X, Image as ImageIcon } from "lucide-react"
 
 const CATEGORIES = [
   "Consultoría",
@@ -255,12 +255,15 @@ export default function ServicesCRUD() {
 
         <Dialog open={isDialogOpen} onOpenChange={(isOpen) => {
           setIsDialogOpen(isOpen);
-          if (isOpen) {
+          if (!isOpen) {
             resetForm();
           }
         }}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={() => {
+              resetForm();
+              setIsDialogOpen(true);
+            }}>
               <Plus className="h-4 w-4 mr-2" />
               Nuevo Servicio
             </Button>
@@ -429,6 +432,7 @@ export default function ServicesCRUD() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[80px]">Imagen</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead>Precio</TableHead>
                 <TableHead>Categoría</TableHead>
@@ -440,6 +444,17 @@ export default function ServicesCRUD() {
             <TableBody>
               {services.map((service) => (
                 <TableRow key={service.id}>
+                  <TableCell>
+                    {
+                      service.image_url ? (
+                        <img src={service.image_url} alt={service.name} className="h-12 w-12 object-cover rounded-md"/>
+                      ) : (
+                        <div className="h-12 w-12 flex items-center justify-center bg-muted rounded-md">
+                          <ImageIcon className="h-6 w-6 text-muted-foreground"/>
+                        </div>
+                      )
+                    }
+                  </TableCell>
                   <TableCell className="font-medium">{service.name}</TableCell>
                   <TableCell>${service.price}</TableCell>
                   <TableCell>
@@ -448,7 +463,7 @@ export default function ServicesCRUD() {
                   <TableCell>{service.stock}</TableCell>
                   <TableCell>
                     {service.on_promotion && (
-                      <Badge className="bg-destructive text-destructive-foreground">Promoción</Badge>
+                      <Badge className="bg-green-600 text-white hover:bg-green-700">Promoción</Badge>
                     )}
                   </TableCell>
                   <TableCell>

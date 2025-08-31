@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ const slides = [
       "Implementamos sistemas de IA personalizados que optimizan procesos y aumentan la productividad de tu empresa.",
     icon: Cpu,
     cta: "Explorar Servicios",
+    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     title: "Automatización Inteligente",
@@ -20,6 +21,7 @@ const slides = [
     description: "Desarrollamos soluciones de automatización que reducen costos operativos y mejoran la eficiencia.",
     icon: Zap,
     cta: "Ver Automatización",
+    imageUrl: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     title: "Seguridad y Confiabilidad",
@@ -27,6 +29,7 @@ const slides = [
     description: "Garantizamos la seguridad de tu información con protocolos de encriptación y monitoreo 24/7.",
     icon: Shield,
     cta: "Conocer Más",
+    imageUrl: "https://images.unsplash.com/photo-1562408590-e32931084e23?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
 ]
 
@@ -36,7 +39,7 @@ export default function Hero() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 5000)
+    }, 7000) // Increased interval for better user experience
     return () => clearInterval(timer)
   }, [])
 
@@ -51,47 +54,58 @@ export default function Hero() {
   const CurrentIcon = slides[currentSlide].icon
 
   return (
-    <section className="relative bg-background overflow-hidden">
-      <div className="ai-pattern absolute inset-0 opacity-30"></div>
+    <section className="relative bg-black text-white overflow-hidden min-h-[700px] flex items-center">
+      {/* Background Images */}
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-50" : "opacity-0"}`}
+          style={{ backgroundImage: `url(${slide.imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }}
+        />
+      ))}
+      
+      <div className="ai-pattern absolute inset-0 opacity-20"></div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 z-10">
         <div className="text-center">
           {/* Icon */}
           <div className="flex justify-center mb-8">
-            <div className="bg-accent/10 p-6 rounded-full">
+            <div className="bg-white/10 backdrop-blur-sm p-6 rounded-full border border-white/20">
               <CurrentIcon className="h-16 w-16 text-accent" />
             </div>
           </div>
 
           {/* Content */}
           <div className="space-y-6 min-h-[300px] flex flex-col justify-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground text-balance">
+            <h1 className="text-4xl md:text-6xl font-bold text-white text-balance tracking-tight">
               {slides[currentSlide].title}
             </h1>
 
-            <p className="text-xl md:text-2xl text-muted-foreground text-balance max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-300 text-balance max-w-3xl mx-auto">
               {slides[currentSlide].subtitle}
             </p>
 
-            <p className="text-lg text-muted-foreground text-pretty max-w-2xl mx-auto">
+            <p className="text-lg text-gray-400 text-pretty max-w-2xl mx-auto">
               {slides[currentSlide].description}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
               <Link href="/services">
-                <Button size="lg" className="text-lg px-8 py-3">
+                <Button size="lg" className="text-lg px-8 py-3 bg-accent hover:bg-accent/90 text-accent-foreground">
                   {slides[currentSlide].cta}
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-3 bg-transparent">
-                Contactar Ahora
-              </Button>
+              <Link href="/contact">
+                <Button variant="outline" size="lg" className="text-lg px-8 py-3 bg-transparent border-white/50 hover:bg-white/10 hover:text-white">
+                  Contactar Ahora
+                </Button>
+              </Link>
             </div>
           </div>
 
           {/* Slide Controls */}
           <div className="flex justify-center items-center space-x-4 mt-12">
-            <Button variant="ghost" size="sm" onClick={prevSlide} className="p-2">
+            <Button variant="ghost" size="sm" onClick={prevSlide} className="p-2 hover:bg-white/10 rounded-full">
               <ChevronLeft className="h-5 w-5" />
             </Button>
 
@@ -100,14 +114,14 @@ export default function Hero() {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    index === currentSlide ? "bg-accent" : "bg-muted"
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    index === currentSlide ? "bg-accent w-6" : "bg-gray-500 hover:bg-gray-400"
                   }`}
                 />
               ))}
             </div>
 
-            <Button variant="ghost" size="sm" onClick={nextSlide} className="p-2">
+            <Button variant="ghost" size="sm" onClick={nextSlide} className="p-2 hover:bg-white/10 rounded-full">
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
