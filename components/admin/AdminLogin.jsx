@@ -26,21 +26,13 @@ export default function AdminLogin() {
     setError("")
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const data = await response.json()
-
-      if (data.success) {
-        localStorage.setItem("adminToken", data.data.token)
+      // Simulación de autenticación (en una app real, esto sería una llamada a la API)
+      if (formData.email === "admin@techsolutionspro.com" && formData.password === "admin123") {
+        // Guardar token de autenticación (simulado)
+        localStorage.setItem("adminToken", "fake-jwt-token")
         router.push("/admin/dashboard")
       } else {
-        setError(data.error || "Credenciales incorrectas. Intenta de nuevo.")
+        setError("Credenciales incorrectas. Intenta de nuevo.")
       }
     } catch (err) {
       setError("Error al iniciar sesión. Intenta de nuevo.")
