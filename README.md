@@ -1,9 +1,17 @@
-# Hello
+# ENTREGA 2 - SEMANA 5 FRONT END  
+[GRUPO B01] – [SUBGRUPO 22] 
+
+INTEGRANTES
+
+LEÓN RUIZ JUAN NICOLÁS
+EDGAR MANTILLA GARZON
+DAVID STIVEN DIAZ JIMENEZ
+LEANDRO NICOLAS VARGAS CUBIDES
+BRAYAN MORENO GARCIA
+
 
 *Automatically synced with your [v0.app](https://v0.app) deployments*
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/jnleonr-9619s-projects/v0-hello)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/gTRmPOjAArz)
 
 ## Overview
 
